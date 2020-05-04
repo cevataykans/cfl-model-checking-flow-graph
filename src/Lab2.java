@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class Lab2
 	{
 		FG test = new FG();
 
-		test.AddNodePair( "eps", "v0", "v1");
+		/*test.AddNodePair( "eps", "v0", "v1");
 		test.AddNodePair( "a", "v0", "v2");
 		test.AddNodePair( "eps", "v3", "v4");
 		test.AddNodePair( "a", "v3", "v5");
@@ -34,7 +35,7 @@ public class Lab2
 
 		System.out.println( "***********");
 		System.out.println( "***********");
-		System.out.println( "***********");
+		System.out.println( "***********");*/
 
 		try
 		{
@@ -80,7 +81,7 @@ public class Lab2
 			}
 			scan.close();
 		}
-		catch ( Exception e)
+		catch ( IOException e)
 		{
 			System.out.println( e);
 			System.out.println( "FUCK FILE DOES NOT EXIST!");

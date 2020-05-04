@@ -47,7 +47,8 @@ public class FG
 
 	public void PrintFG()
 	{
-		System.out.println( "Printing node configurations:");
+		System.out.print( '\n');
+		System.out.println( "*****Printing node configurations****");
 		for ( String key : methodsToNodes.keySet() )
 		{
 			System.out.println( "Method is: " + key);
@@ -62,17 +63,13 @@ public class FG
 			System.out.println();
 		}
 
-		System.out.println();
-		System.out.println( "*************");
-		System.out.println();
-
-		System.out.println( "Printing edge configurations:");
+		System.out.println( "*****Printing edge configurations*****");
 		for ( String key : edgeTransition.keySet() )
 		{
 			System.out.println( "Method is: " + key);
 			for ( NodePair pair : edgeTransition.get( key) )
 			{
-				System.out.println( "First Node: " + pair.firstNode + " and second node: " + pair.secondNode);
+				System.out.println( "First Node is " + pair.firstNode + " and second node is " + pair.secondNode);
 			}
 			System.out.println();
 		}
