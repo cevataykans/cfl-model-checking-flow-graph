@@ -6,12 +6,14 @@ public class Lab2
 {
 	public static void main( String[] args)
 	{
-		ReadSimpleTestCase();
+		FG fg = new FG();
+		ReadSimpleTestCase( fg);
+		fg.PrintFG();
 
 		System.exit( 0);
 	}
 
-	public static void ReadSimpleTestCase()
+	public static void ReadSimpleTestCase( FG toStore)
 	{
 		FG test = new FG();
 
@@ -20,12 +22,12 @@ public class Lab2
 		test.AddNodePair( "eps", "v3", "v4");
 		test.AddNodePair( "a", "v3", "v5");
 
-		test.AddNodeType( "main", Node.ENTRY, "v0");
-		test.AddNodeType( "main", Node.RET, "v1");
-		test.AddNodeType( "main", Node.RET, "v2");
-		test.AddNodeType( "a", Node.ENTRY, "v3");
-		test.AddNodeType( "a", Node.RET, "v4");
-		test.AddNodeType( "a", Node.RET, "v5");
+		test.AddNodeType( "main",  "v0", Node.ENTRY);
+		test.AddNodeType( "main", "v1", Node.RET);
+		test.AddNodeType( "main", "v2", Node.RET);
+		test.AddNodeType( "a",  "v3", Node.ENTRY);
+		test.AddNodeType( "a", "v4", Node.RET);
+		test.AddNodeType( "a", "v5", Node.RET);
 
 		test.PrintFG();
 		test = null;
@@ -34,14 +36,47 @@ public class Lab2
 		System.out.println( "***********");
 		System.out.println( "***********");
 
-		test = new FG();
-
 		try
 		{
 			Scanner scan = new Scanner( new File( "FGtestcases/simple.cfg") );
+			String[] arguments = new String[ 4];
 			while ( scan.hasNextLine() )
 			{
-				System.out.println( scan.nextLine() );
+				String line = scan.nextLine(); // Get the current line in the cfg file
+				int curArg = 0;
+				int prevIndex = 0;
+				for ( int i = 0; i < line.length(); i++)
+				{
+					if ( line.charAt( i) == ' ')
+					{
+						arguments[ curArg++] = line.substring( prevIndex, i);
+						prevIndex = i + 1;
+					}
+					else if ( i + 1 == line.length() )
+					{
+						arguments[ curArg] = line.substring( prevIndex, i + 1);
+					}
+				}
+
+				if ( arguments[ 0].equals( "node"))
+				{
+					arguments[ 2] = GetMethodName( arguments[ 2]);
+					if ( arguments[ 3] == null)
+					{
+						arguments[ 3] = Node.NONE;
+					}
+
+					toStore.AddNodeType( arguments[ 2], arguments[ 1], arguments[ 3] );
+				}
+				else
+				{
+					toStore.AddNodePair( arguments[ 3], arguments[ 1], arguments[ 2]);
+				}
+
+				arguments[ 0] = null;
+				arguments[ 1] = null;
+				arguments[ 2] = null;
+				arguments[ 3] = null;
 			}
 			scan.close();
 		}
@@ -51,5 +86,10 @@ public class Lab2
 			System.out.println( "FUCK FILE DOES NOT EXIST!");
 			return;
 		}
+	}
+
+	public static String GetMethodName( String method)
+	{
+		return method.substring( 5, method.length() - 1);
 	}
 }

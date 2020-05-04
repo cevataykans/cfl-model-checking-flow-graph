@@ -30,7 +30,7 @@ public class FG
 		edgeTransition.get( methodName).add( pair);
 	}
 
-	public void AddNodeType( String methodName, String type, String node)
+	public void AddNodeType( String methodName, String node, String type)
 	{
 		if ( !methodsToNodes.containsKey( methodName) )
 		{
