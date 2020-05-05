@@ -1,15 +1,48 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Lab2
 {
-	public static void main( String[] args)
-	{
+	public static void main( String[] args) throws FileNotFoundException {
 		FG fg = new FG();
 		ReadSimpleTestCase( fg);
 		fg.PrintFG();
+
+		System.out.println("\n\n---------- Testing EvenOdd1a ----------\n\n");
+		ArrayList<String> lines = readDfaSpecFile("EvenOdd1a.spec");
+		Automaton<String, String> test = new Automaton<String, String>(lines);
+		test.printGV();
+		System.out.println("Initial State: " + test.getInitialState());
+
+		System.out.println("\n\n---------- Testing EvenOdd1b ----------\n\n");
+		lines = readDfaSpecFile("EvenOdd1b.spec");
+		test = new Automaton<String, String>(lines);
+		test.printGV();
+		System.out.println("Initial State: " + test.getInitialState());
+
+		System.out.println("\n\n---------- Testing simple ----------\n\n");
+		lines = readDfaSpecFile("simple.spec");
+		test = new Automaton<String, String>(lines);
+		test.printGV();
+		System.out.println("Initial State: " + test.getInitialState());
+
+		System.out.println("\n\n---------- Testing Vote_v ----------\n\n");
+		lines = readDfaSpecFile("Vote_v.spec");
+		test = new Automaton<String, String>(lines);
+		test.printGV();
+		System.out.println("Initial State: " + test.getInitialState());
+
+		System.out.println("\n\n---------- Testing Vote_gv ----------\n\n");
+		lines = readDfaSpecFile("Vote_gv.spec");
+		test = new Automaton<String, String>(lines);
+		test.printGV();
+		System.out.println("Initial State: " + test.getInitialState());
 
 		System.exit( 0);
 	}
@@ -92,5 +125,22 @@ public class Lab2
 	public static String GetMethodName( String method)
 	{
 		return method.substring( 5, method.length() - 1);
+	}
+
+	public static ArrayList<String> readDfaSpecFile(String fileName) throws FileNotFoundException {
+
+		Path current = Paths.get("DFATestcases");
+		String prefix = current.toAbsolutePath().toString();
+		System.out.println(prefix);
+
+		Scanner fileReader = new Scanner(new File(prefix + "/" + fileName));
+		ArrayList<String> contents = new ArrayList<String>();
+
+		while (fileReader.hasNextLine()) {
+			String testCase = fileReader.nextLine();
+			contents.add(testCase);
+		}
+
+		return contents;
 	}
 }
