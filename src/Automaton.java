@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Automaton<State, Sym> {
@@ -10,7 +14,9 @@ public class Automaton<State, Sym> {
     public Automaton() {
     }
 
-    public Automaton(ArrayList<String> lines) {
+    public Automaton(String fileName) throws FileNotFoundException {
+
+        ArrayList<String> lines = this.readDfaSpecFile(fileName);
 
         for (String line : lines) {
 
@@ -41,7 +47,6 @@ public class Automaton<State, Sym> {
             if (dstState.contains("("))
                 this.addAcceptingState(dst);
         }
-
     }
 
     public Automaton(Automaton<State, Sym> a) {
@@ -272,6 +277,23 @@ public class Automaton<State, Sym> {
 
     protected String symsStringRep(Set<Sym> syms) {
         return syms.toString().replaceAll("\\[|,|\\]", "").replace("\"", "");
+    }
+
+    private ArrayList<String> readDfaSpecFile(String fileName) throws FileNotFoundException {
+
+        Path current = Paths.get("DFATestcases");
+        String prefix = current.toAbsolutePath().toString();
+        System.out.println(prefix);
+
+        Scanner fileReader = new Scanner(new File(prefix + "/" + fileName));
+        ArrayList<String> contents = new ArrayList<String>();
+
+        while (fileReader.hasNextLine()) {
+            String testCase = fileReader.nextLine();
+            contents.add(testCase);
+        }
+
+        return contents;
     }
 }
 

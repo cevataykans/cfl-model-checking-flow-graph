@@ -18,7 +18,9 @@ public class Lab2
 		System.out.println( "**********************");
 		System.out.println( "**********************");
 		System.out.println( "**********************");
-		CFG cfg = new CFG( fg, new Automaton());
+		Automaton<String, String> test = new Automaton<String, String>("simple.spec");
+		CFG cfg = new CFG( fg, test);
+		cfg.PrintProductTable();
 
 		/*System.out.println("\n\n---------- Testing EvenOdd1a ----------\n\n");
 		ArrayList<String> lines = readDfaSpecFile("EvenOdd1a.spec");
@@ -131,22 +133,5 @@ public class Lab2
 	public static String GetMethodName( String method)
 	{
 		return method.substring( 5, method.length() - 1);
-	}
-
-	public static ArrayList<String> readDfaSpecFile(String fileName) throws FileNotFoundException {
-
-		Path current = Paths.get("DFATestcases");
-		String prefix = current.toAbsolutePath().toString();
-		System.out.println(prefix);
-
-		Scanner fileReader = new Scanner(new File(prefix + "/" + fileName));
-		ArrayList<String> contents = new ArrayList<String>();
-
-		while (fileReader.hasNextLine()) {
-			String testCase = fileReader.nextLine();
-			contents.add(testCase);
-		}
-
-		return contents;
 	}
 }

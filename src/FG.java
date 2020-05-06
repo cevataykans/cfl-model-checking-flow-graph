@@ -52,9 +52,9 @@ public class FG
 		return nodes;
 	}
 
-	public Set<NodePair<String>> GetEpsTransitions()
+	public Set<NodePair<String>> GetMethodTransitions(String name)
 	{
-		Set<NodePair<String>> nodePairs = edgeTransition.get( "eps");
+		Set<NodePair<String>> nodePairs = edgeTransition.get( name);
 		for ( NodePair p : nodePairs)
 		{
 			System.out.println( "From node " + p.firstNode + " -> to " + p.secondNode);
