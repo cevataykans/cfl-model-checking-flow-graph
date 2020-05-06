@@ -10,12 +10,15 @@ import java.util.Scanner;
 public class Lab2
 {
 	public static void main( String[] args) throws FileNotFoundException {
+
 		FG fg = new FG();
 		ReadSimpleTestCase( fg);
 		fg.PrintFG();
 
-		fg.GetNodesOfType( "main", NodeType.RET);
-		fg.GetEpsTransitions();
+		System.out.println( "**********************");
+		System.out.println( "**********************");
+		System.out.println( "**********************");
+		CFG cfg = new CFG( fg, new Automaton());
 
 		/*System.out.println("\n\n---------- Testing EvenOdd1a ----------\n\n");
 		ArrayList<String> lines = readDfaSpecFile("EvenOdd1a.spec");
