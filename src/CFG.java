@@ -92,8 +92,8 @@ public class CFG
 		p.parentVariable = "L";
 		AddProduction( "L", p);*/
 
-		PrintProductTable();
-		PrintAppearances();
+		//PrintProductTable();
+		//PrintAppearances();
 		System.out.println( TestEmptyness() );
 	}
 
@@ -181,37 +181,47 @@ public class CFG
 
 		// get method names and remove eps
 		Set<String> methods = fg.edgeTransition.keySet();
-		methods.remove("eps");
+		//methods.remove("eps");
 
 		// for every call edge m
 		for (String method : methods) {
 
-			Set<String> entryNode = fg.GetNodesOfType(method, NodeType.ENTRY);
-			String entry = entryNode.toArray(new String[entryNode.size()])[0]; // v_k
-			Set<NodePair<String>> pairs = fg.GetMethodTransitions(method); // all transitions on m
+			if ( !method.equals("eps") )
+			{
+				Set<String> entryNode = fg.GetNodesOfType(method, NodeType.ENTRY);
+				if ( entryNode.size() == 0)
+				{
+					break;
+				}
+				String entry = entryNode.toArray(new String[entryNode.size()])[0]; // v_k
+				Set<NodePair<String>> pairs = fg.GetMethodTransitions( method); // all transitions on m
 
-			// for every v_i -m-> v_j
-			for (NodePair<String> pair : pairs) {
-				String src = pair.firstNode; // v_i
-				String dst = pair.secondNode; // v_j
+				// for every v_i -m-> v_j
+				for (NodePair<String> pair : pairs) {
+					String src = pair.firstNode; // v_i
+					String dst = pair.secondNode; // v_j
 
-				// for every sequence q_A,q_b,q_c,q_d in Q^4
-				for (String sequence : quadSequences) {
-					// Create and add production
-					Production prod = new Production();
-					String[] stateSeq = sequence.split("-");
+					// for every sequence q_A,q_b,q_c,q_d in Q^4
+					for (String sequence : quadSequences) {
+						// Create and add production
+						Production prod = new Production();
+						String[] stateSeq = sequence.split("-");
 
-					String head = "[" + String.join("-", stateSeq[0], src, stateSeq[3]) + "]";
-					prod.parentVariable = head;
-					prod.count = 3;
+						String head = "[" + String.join("-", stateSeq[0], src, stateSeq[3]) + "]";
+						prod.parentVariable = head;
+						prod.count = 3;
 
-					prod.production.add("[" + String.join("-", stateSeq[0], method, stateSeq[1]) + "]");
-					this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
-					prod.production.add("[" + String.join("-", stateSeq[1], entry, stateSeq[2]) + "]");
-					this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
-					prod.production.add("[" + String.join("-", stateSeq[2], dst, stateSeq[3]) + "]");
-					this.AddProduction(head, prod);
-					this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
+						prod.production.add("[" + String.join("-", stateSeq[0], method, stateSeq[1]) + "]");
+						this.AddAppearance(prod.production.get(prod.production.size() - 1), prod, -1);
+
+						prod.production.add("[" + String.join("-", stateSeq[1], entry, stateSeq[2]) + "]");
+						this.AddAppearance(prod.production.get(prod.production.size() - 1), prod, -1);
+
+						prod.production.add("[" + String.join("-", stateSeq[2], dst, stateSeq[3]) + "]");
+						this.AddAppearance(prod.production.get(prod.production.size() - 1), prod, -1);
+
+						this.AddProduction(head, prod);
+					}
 				}
 			}
 		}
@@ -219,25 +229,26 @@ public class CFG
 
 	// Assignment 4
 	private void addReturnNodeRules() {
-		Set<String> methods = fg.edgeTransition.keySet();
+		Set<String> methods = fg.methodsToNodes.keySet();
 		Set<String> states = dfa.getStates();
-
 		for (String method : methods) {
 
-			// get every return node of method
-			Set<String> returnNodes = fg.GetNodesOfType(method, NodeType.RET);
+			if ( !method.equals( "eps")) {
+				// get every return node of method
+				Set<String> returnNodes = fg.GetNodesOfType(method, NodeType.RET);
 
-			// for every return node v_i
-			for (String node : returnNodes) {
+				// for every return node v_i
+				for (String node : returnNodes) {
 
-				for (String state : states) {
-					String head = "[" + String.join("-", state, node, state) + "]";
+					for (String state : states) {
+						String head = "[" + String.join("-", state, node, state) + "]";
 
-					Production prod = new Production();
-					prod.parentVariable = head;
-					prod.production.add("eps");
+						Production prod = new Production();
+						prod.parentVariable = head;
+						prod.production.add("eps");
 
-					this.AddProduction(head, prod);
+						this.AddProduction(head, prod);
+					}
 				}
 			}
 		}

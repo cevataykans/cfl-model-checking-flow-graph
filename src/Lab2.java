@@ -13,12 +13,11 @@ public class Lab2
 
 		FG fg = new FG();
 		ReadSimpleTestCase( fg);
-		fg.PrintFG();
 
 		System.out.println( "**********************");
 		System.out.println( "**********************");
 		System.out.println( "**********************");
-		Automaton<String, String> test = new Automaton<String, String>("simple.spec");
+		Automaton<String, String> test = new Automaton<String, String>("Vote_gv.spec");
 		CFG cfg = new CFG( fg, test);
 		//cfg.PrintProductTable();
 
@@ -80,7 +79,7 @@ public class Lab2
 
 		try
 		{
-			Scanner scan = new Scanner( new File( "FGtestcases/simple.cfg") );
+			Scanner scan = new Scanner( new File( "FGtestcases/Vote_ne.cfg") );
 			String[] arguments = new String[ 4];
 			while ( scan.hasNextLine() )
 			{

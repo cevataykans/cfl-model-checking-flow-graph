@@ -44,21 +44,29 @@ public class FG
 
 	public Set<String> GetNodesOfType( String methodName, String type)
 	{
+		/*System.out.println( methodName);
+		System.out.println( type);
+		PrintFG();*/
+		if ( !methodsToNodes.containsKey( methodName) )
+		{
+			return new HashSet<String>();
+		}
+
 		Set<String> nodes = methodsToNodes.get( methodName).get( type);
-		for( String s : nodes)
+		/*for( String s : nodes)
 		{
 			System.out.println( s);
-		}
+		}*/
 		return nodes;
 	}
 
 	public Set<NodePair<String>> GetMethodTransitions(String name)
 	{
 		Set<NodePair<String>> nodePairs = edgeTransition.get( name);
-		for ( NodePair p : nodePairs)
+		/*for ( NodePair p : nodePairs)
 		{
 			System.out.println( "From node " + p.firstNode + " -> to " + p.secondNode);
-		}
+		}*/
 		return nodePairs;
 	}
 
