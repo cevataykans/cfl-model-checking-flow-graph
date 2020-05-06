@@ -20,7 +20,7 @@ public class Lab2
 		System.out.println( "**********************");
 		Automaton<String, String> test = new Automaton<String, String>("simple.spec");
 		CFG cfg = new CFG( fg, test);
-		cfg.PrintProductTable();
+		//cfg.PrintProductTable();
 
 		/*System.out.println("\n\n---------- Testing EvenOdd1a ----------\n\n");
 		ArrayList<String> lines = readDfaSpecFile("EvenOdd1a.spec");

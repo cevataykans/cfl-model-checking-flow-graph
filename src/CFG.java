@@ -11,6 +11,7 @@ public class CFG
 	String startingVariable = "$";
 	HashMap< String, List< AppearanceNode > > appearances;
 	HashMap< String, Set< Production > > productTable;
+	HashMap< String, Integer> generatingTable;
 
 	// Constructor
 	public CFG( FG fg, Automaton dfa)
@@ -19,6 +20,8 @@ public class CFG
 		this.dfa = dfa;
 		appearances = new HashMap<>();
 		productTable = new HashMap<>();
+		generatingTable = new HashMap<>();
+
 		MultiplyFGDFA();
 
 		/*Production p = new Production();
@@ -26,6 +29,7 @@ public class CFG
 		p.count = 1;
 		p.parentVariable = startingVariable;
 		AddProduction( startingVariable, p);
+		AddAppearance( "B", p, 0);
 
 		p = new Production();
 		p.production.add( "C");
@@ -33,6 +37,8 @@ public class CFG
 		p.count = 2;
 		p.parentVariable = "B";
 		AddProduction( "B", p);
+		AddAppearance( "C", p, 0);
+		AddAppearance( "A", p, 1);
 
 		p = new Production();
 		p.production.add( "D");
@@ -41,12 +47,15 @@ public class CFG
 		p.count = 2;
 		p.parentVariable = "A";
 		AddProduction( "A", p);
+		AddAppearance( "D", p, 0);
+		AddAppearance( "D", p, 2);
 
 		p = new Production();
 		p.production.add( "B");
 		p.count = 1;
 		p.parentVariable = "C";
 		AddProduction( "C", p);
+		AddAppearance( "B", p, 0);
 
 		p = new Production();
 		p.production.add( "b");
@@ -61,12 +70,15 @@ public class CFG
 		p.count = 2;
 		p.parentVariable = "D";
 		AddProduction( "D", p);
+		AddAppearance( "K", p, 0);
+		AddAppearance( "L", p, 1);
 
 		p = new Production();
 		p.production.add( "C");
 		p.count = 1;
 		p.parentVariable = "D";
 		AddProduction( "D", p);
+		AddAppearance( "C", p, 0);
 
 		p = new Production();
 		p.production.add( "eps");
@@ -78,9 +90,11 @@ public class CFG
 		p.production.add( "eps");
 		p.count = 0;
 		p.parentVariable = "L";
-		AddProduction( "L", p);
+		AddProduction( "L", p);*/
 
-		PrintProductTable();*/
+		PrintProductTable();
+		PrintAppearances();
+		System.out.println( TestEmptyness() );
 	}
 
 	public void AddAppearance( String key, Production product, int indexInProduction )
@@ -127,6 +141,7 @@ public class CFG
 			prod.parentVariable = startingVariable;
 			prod.production.add("[" + String.join("-", initial, entry, state) + "]");
 			this.AddProduction(startingVariable, prod);
+			this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
 		}
 	}
 
@@ -154,6 +169,7 @@ public class CFG
 				prod.count = 1;
 				prod.production.add("[" + String.join("-", qA, dst, qB) + "]");
 				this.AddProduction(head, prod);
+				this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
 			}
 		}
 	}
@@ -190,9 +206,12 @@ public class CFG
 					prod.count = 3;
 
 					prod.production.add("[" + String.join("-", stateSeq[0], method, stateSeq[1]) + "]");
+					this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
 					prod.production.add("[" + String.join("-", stateSeq[1], entry, stateSeq[2]) + "]");
+					this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
 					prod.production.add("[" + String.join("-", stateSeq[2], dst, stateSeq[3]) + "]");
 					this.AddProduction(head, prod);
+					this.AddAppearance( prod.production.get( prod.production.size() - 1), prod, -1);
 				}
 			}
 		}
@@ -216,7 +235,7 @@ public class CFG
 
 					Production prod = new Production();
 					prod.parentVariable = head;
-					prod.production.add("EPSILON");
+					prod.production.add("eps");
 
 					this.AddProduction(head, prod);
 				}
@@ -246,7 +265,7 @@ public class CFG
 
 				// iterate over methods, excluding eps that trigger the transition
 				for (String method : methods) {
-					if (!method.equals("eqs")) {
+					if (!method.equals("eps")) {
 						String head = "[" + String.join("-", src, method, dst) + "]";
 
 						Production prod = new Production();
@@ -284,6 +303,81 @@ public class CFG
 		return sequences;
 	}
 
+	public int TestEmptyness()
+	{
+		// Adjust the appearances table and generating table for the algorithm
+		for ( String key : productTable.keySet() )
+		{
+			// Put 0 to represent ? for every variable
+			generatingTable.put( key, 0);
+
+			// If a variable does not appear any where in the production table, create an empty list to avoid null pointer exception
+			if ( !appearances.containsKey( key) )
+			{
+				appearances.put( key, new ArrayList<>());
+			}
+		}
+
+		LinkedList<String> nodesToVisit = new LinkedList<>();
+		// Traverse over every production to find terminating variables
+		for ( String variable : productTable.keySet() )
+		{
+			for ( Production product : productTable.get( variable) )
+			{
+				if ( product.count == 0 && generatingTable.get( variable) == 0)
+				{
+					nodesToVisit.add( variable);
+					generatingTable.put( variable, 1);
+				}
+			}
+		}
+
+		// Try to find every possible generating variable
+		while ( nodesToVisit.size() > 0)
+		{
+			// Get the variable at the head
+			String nodeToVisit = nodesToVisit.remove();
+
+			System.out.println( nodeToVisit);
+			// Get the appearances of that variable
+			List<AppearanceNode> appearanceList = appearances.get( nodeToVisit);
+			for ( AppearanceNode toVisit : appearanceList)
+			{
+				toVisit.productionAppeardIn.count--;
+				if ( toVisit.productionAppeardIn.count == 0 && generatingTable.get( toVisit.productionAppeardIn.parentVariable ) == 0)
+				{
+					nodesToVisit.add( toVisit.productionAppeardIn.parentVariable);
+					generatingTable.put( toVisit.productionAppeardIn.parentVariable, 1);
+				}
+			}
+		}
+
+		// Mark every variable as non-generating
+		for ( String key : generatingTable.keySet() )
+		{
+			if ( generatingTable.get( key) != 1)
+			{
+				generatingTable.put( key, -1);
+			}
+		}
+
+		return generatingTable.get( startingVariable);
+	}
+
+
+	public void PrintAppearances()
+	{
+		for ( String variable : appearances.keySet() )
+		{
+			System.out.print( variable + " -> ");
+			for ( AppearanceNode node : appearances.get( variable) )
+			{
+				System.out.print( node.productionAppeardIn.parentVariable + " , ");
+			}
+			System.out.println();
+		}
+	}
+
 	public void PrintProductTable()
 	{
 		for ( String variable : productTable.keySet())
@@ -293,10 +387,10 @@ public class CFG
 			{
 				for ( String symbol : p.production)
 				{
-					System.out.print( symbol + ".");
+					System.out.print( symbol); //+ ".");
 				}
-				System.out.print( " and count is " + p.count);
-				System.out.print( " and parent node is " + p.parentVariable);
+				//System.out.print( " and count is " + p.count);
+				//System.out.print( " and parent node is " + p.parentVariable);
 				System.out.print( " |||| ");
 			}
 			System.out.println();
