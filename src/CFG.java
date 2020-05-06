@@ -94,7 +94,12 @@ public class CFG
 
 		//PrintProductTable();
 		//PrintAppearances();
-		System.out.println( TestEmptyness() );
+		int i = TestEmptyness();
+		System.out.println( "This language is generating (1 for yes, -1 for no) => " + i);
+		if ( i == 1)
+		{
+			ExperimentalVariableDeletionTest();
+		}
 	}
 
 	public void AddAppearance( String key, Production product, int indexInProduction )
@@ -349,7 +354,7 @@ public class CFG
 			// Get the variable at the head
 			String nodeToVisit = nodesToVisit.remove();
 
-			System.out.println( nodeToVisit);
+			//System.out.println( nodeToVisit);
 			// Get the appearances of that variable
 			List<AppearanceNode> appearanceList = appearances.get( nodeToVisit);
 			for ( AppearanceNode toVisit : appearanceList)
@@ -406,6 +411,42 @@ public class CFG
 			}
 			System.out.println();
 		}
+	}
+
+	public void ExperimentalVariableDeletionTest()
+	{
+		PrintProductTable();
+		System.out.println( "*******************");
+		System.out.println( "*******************");
+
+		int count = 0;
+		for ( String curVariable : productTable.keySet() )
+		{
+			ArrayList<Production> productions = new ArrayList<>( productTable.get( curVariable));
+			int i = 0;
+			while ( i < productions.size() )
+			{
+				if ( productions.get( i).count > 0 )
+				{
+					count++;
+					productTable.get( curVariable).remove( productions.get( i));
+				}
+				i++;
+			}
+		}
+		System.out.println( count);
+
+		for ( String curVariable :generatingTable.keySet() )
+		{
+			if ( generatingTable.get( curVariable) == -1)
+			{
+				productTable.remove( curVariable);
+			}
+		}
+
+		System.out.println( "*******************");
+		System.out.println( "*******************");
+		PrintProductTable();
 	}
 }
 
