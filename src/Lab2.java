@@ -14,7 +14,10 @@ public class Lab2
 		ReadSimpleTestCase( fg);
 		fg.PrintFG();
 
-		System.out.println("\n\n---------- Testing EvenOdd1a ----------\n\n");
+		fg.GetNodesOfType( "main", NodeType.RET);
+		fg.GetEpsTransitions();
+
+		/*System.out.println("\n\n---------- Testing EvenOdd1a ----------\n\n");
 		ArrayList<String> lines = readDfaSpecFile("EvenOdd1a.spec");
 		Automaton<String, String> test = new Automaton<String, String>(lines);
 		test.printGV();
@@ -43,7 +46,7 @@ public class Lab2
 		test = new Automaton<String, String>(lines);
 		test.printGV();
 		System.out.println("Initial State: " + test.getInitialState());
-
+		*/
 		System.exit( 0);
 	}
 
@@ -97,7 +100,7 @@ public class Lab2
 					arguments[ 2] = GetMethodName( arguments[ 2]);
 					if ( arguments[ 3] == null)
 					{
-						arguments[ 3] = Node.NONE;
+						arguments[ 3] = NodeType.NONE;
 					}
 
 					toStore.AddNodeType( arguments[ 2], arguments[ 1], arguments[ 3] );

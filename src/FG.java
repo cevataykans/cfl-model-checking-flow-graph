@@ -1,5 +1,3 @@
-import org.w3c.dom.Node;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +7,6 @@ public class FG
 	// Variables
 	HashMap< String, Set< NodePair< String> > > edgeTransition;
 	HashMap< String, HashMap< String, Set<String> > > methodsToNodes;
-
 
 	public FG()
 	{
@@ -43,6 +40,26 @@ public class FG
 		}
 
 		methodsToNodes.get( methodName).get( type).add( node);
+	}
+
+	public Set<String> GetNodesOfType( String methodName, String type)
+	{
+		Set<String> nodes = methodsToNodes.get( methodName).get( type);
+		for( String s : nodes)
+		{
+			System.out.println( s);
+		}
+		return nodes;
+	}
+
+	public Set<NodePair<String>> GetEpsTransitions()
+	{
+		Set<NodePair<String>> nodePairs = edgeTransition.get( "eps");
+		for ( NodePair p : nodePairs)
+		{
+			System.out.println( "From node " + p.firstNode + " -> to " + p.secondNode);
+		}
+		return nodePairs;
 	}
 
 	public void PrintFG()
