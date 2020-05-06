@@ -99,6 +99,7 @@ public class CFG
 		if ( i == 1)
 		{
 			ExperimentalVariableDeletionTest();
+			ExperimentalGenerate();
 		}
 	}
 
@@ -447,6 +448,48 @@ public class CFG
 		System.out.println( "*******************");
 		System.out.println( "*******************");
 		PrintProductTable();
+	}
+
+	public void ExperimentalGenerate()
+	{
+		//Hashtable<Production, Boolean> visited = new Hashtable<>();
+		HashSet<Production> visited = new HashSet<>();
+		Stack<String> variableStack = new Stack<>();
+		StringBuilder toGenerate = new StringBuilder();
+
+		variableStack.push( startingVariable);
+		while( variableStack.size() > 0)
+		{
+			String curVariable = variableStack.pop();
+
+			// Check if terminal
+			if ( curVariable.charAt( 0) != '[' && curVariable.charAt( 0) != '$') // Check if it is a terminal symbol
+			{
+				// Push the terminating symbol only if its not EPSILON
+				if ( !curVariable.equals("eps") )
+				{
+					toGenerate.append( curVariable);
+				}
+			}
+			else // Find a new production that is not visited and push it to the stack according to the variable order!
+			{
+				for ( Production p : productTable.get( curVariable) )
+				{
+					if ( !visited.contains( p) )
+					{
+						// mark Production as visited
+						visited.add( p);
+
+						ArrayList<String> variablesToVisit = p.production;
+						for ( int i = variablesToVisit.size() - 1; i >= 0; i--)
+						{
+							variableStack.push( variablesToVisit.get( i) );
+						}
+					}
+				}
+			}
+		}
+		System.out.println( toGenerate.toString());
 	}
 }
 

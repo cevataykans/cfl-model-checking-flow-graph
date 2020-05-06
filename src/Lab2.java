@@ -17,7 +17,7 @@ public class Lab2
 		System.out.println( "**********************");
 		System.out.println( "**********************");
 		System.out.println( "**********************");
-		Automaton<String, String> test = new Automaton<String, String>("simple.spec");
+		Automaton<String, String> test = new Automaton<String, String>("EvenOdd1b.spec");
 		CFG cfg = new CFG( fg, test);
 		//cfg.PrintProductTable();
 
@@ -79,7 +79,7 @@ public class Lab2
 
 		try
 		{
-			Scanner scan = new Scanner( new File( "FGtestcases/simple.cfg") );
+			Scanner scan = new Scanner( new File( "FGtestcases/EvenOdd.cfg") );
 			String[] arguments = new String[ 4];
 			while ( scan.hasNextLine() )
 			{
