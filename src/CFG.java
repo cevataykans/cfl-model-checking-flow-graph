@@ -122,13 +122,11 @@ public class CFG
 		String entry = entryOfMain.toArray(new String[entryOfMain.size()])[0]; // v0
 
 		for (String state : finals) {
-			Production newProd = new Production();
-			newProd.count = 1;
-			newProd.parentVariable = startingVariable;
-			newProd.production.add(initial); // q0
-			newProd.production.add(entry); // v0
-			newProd.production.add(state); // q_i
-			this.AddProduction(startingVariable, newProd);
+			Production prod = new Production();
+			prod.count = 1;
+			prod.parentVariable = startingVariable;
+			prod.production.add("[" + String.join("-", initial, entry, state) + "]");
+			this.AddProduction(startingVariable, prod);
 		}
 	}
 
@@ -149,14 +147,12 @@ public class CFG
 				String dst = pair.secondNode; // v_j
 				String qA = seq[0]; // q_a
 				String qB = seq[1]; // q_b
-				String head = String.join("-", qA, src, qB);
+				String head = "[" + String.join("-", qA, src, qB) + "]";
 
 				Production prod = new Production();
 				prod.parentVariable = head;
 				prod.count = 1;
-				prod.production.add(qA); // q_a
-				prod.production.add(dst); // v_j
-				prod.production.add(qB); // q_b
+				prod.production.add("[" + String.join("-", qA, dst, qB) + "]");
 				this.AddProduction(head, prod);
 			}
 		}
@@ -189,13 +185,13 @@ public class CFG
 					Production prod = new Production();
 					String[] stateSeq = sequence.split("-");
 
-					String head = String.join("-", stateSeq[0], src, stateSeq[3]);
+					String head = "[" + String.join("-", stateSeq[0], src, stateSeq[3]) + "]";
 					prod.parentVariable = head;
 					prod.count = 3;
 
-					prod.production.add(String.join("-", stateSeq[0], method, stateSeq[1]));
-					prod.production.add(String.join("-", stateSeq[1], entry, stateSeq[2]));
-					prod.production.add(String.join("-", stateSeq[2], dst, stateSeq[3]));
+					prod.production.add("[" + String.join("-", stateSeq[0], method, stateSeq[1]) + "]");
+					prod.production.add("[" + String.join("-", stateSeq[1], entry, stateSeq[2]) + "]");
+					prod.production.add("[" + String.join("-", stateSeq[2], dst, stateSeq[3]) + "]");
 					this.AddProduction(head, prod);
 				}
 			}
@@ -216,11 +212,11 @@ public class CFG
 			for (String node : returnNodes) {
 
 				for (String state : states) {
-					String head = String.join("-", state, node, state);
+					String head = "[" + String.join("-", state, node, state) + "]";
 
 					Production prod = new Production();
 					prod.parentVariable = head;
-					prod.production.add("eps");
+					prod.production.add("EPSILON");
 
 					this.AddProduction(head, prod);
 				}
@@ -248,14 +244,16 @@ public class CFG
 				String dst = (String) innerPair.getKey(); // q_j
 				Set<String> methods = (Set<String>) innerPair.getValue();
 
-				// iterate over methods that trigger the transition
+				// iterate over methods, excluding eps that trigger the transition
 				for (String method : methods) {
-					String head = String.join("-", src, method, dst);
+					if (!method.equals("eqs")) {
+						String head = "[" + String.join("-", src, method, dst) + "]";
 
-					Production prod = new Production();
-					prod.production.add(method);
-					prod.parentVariable = head;
-					this.AddProduction(head, prod);
+						Production prod = new Production();
+						prod.production.add(method);
+						prod.parentVariable = head;
+						this.AddProduction(head, prod);
+					}
 				}
 			}
 		}
