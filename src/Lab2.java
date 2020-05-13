@@ -17,7 +17,7 @@ public class Lab2
 		System.out.println( "**********************");
 		System.out.println( "**********************");
 		System.out.println( "**********************");
-		Automaton<String, String> test = new Automaton<String, String>("EvenOdd1b.spec");
+		Automaton<String, String> test = new Automaton<String, String>("simple.spec"); //EvenOdd1b
 		CFG cfg = new CFG( fg, test);
 		//cfg.PrintProductTable();
 
@@ -79,7 +79,7 @@ public class Lab2
 
 		try
 		{
-			Scanner scan = new Scanner( new File( "FGtestcases/EvenOdd.cfg") );
+			Scanner scan = new Scanner( new File( "FGtestcases/simple.cfg") ); //EvenOdd
 			String[] arguments = new String[ 4];
 			while ( scan.hasNextLine() )
 			{
@@ -124,7 +124,7 @@ public class Lab2
 		catch ( IOException e)
 		{
 			System.out.println( e);
-			System.out.println( "FUCK FILE DOES NOT EXIST!");
+			System.out.println( "FILE DOES NOT EXIST!");
 			return;
 		}
 	}
